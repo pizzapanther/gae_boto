@@ -10,7 +10,7 @@ If you don't see the API you need, please contribute or ask nicely in the Issue 
 
 **Example Usage:**
 
-```
+```python
 from gae_boto import AmazonConnection
 
 connection = AmazonConnection('AWS_ID', 'AWS_KEY', 'ACCOUNT_NUMBER')
@@ -27,3 +27,11 @@ result = rpc.get_result()
 All calls to the API support the arguments **async=True|False** and **callback=a_callback_function**.  See [Asynchronous Requests](https://developers.google.com/appengine/docs/python/urlfetch/asynchronousrequests) for more info on how to handle asynchronous requests.
 
 For individual parameters supported for each API see the links for each API above.  In general, we try to follow the same naming conventions used in the Amazon Docs for actions and input parameters.
+
+## Installation
+
+To install, simply add the gae_boto directory to the root of your App Engine app. You can do this several ways.
+
+* Download and unzip: https://github.com/pizzapanther/gae_boto/archive/master.zip
+* Checkout the code: `git clone git@github.com:pizzapanther/gae_boto.git`
+* If your using Git checkout as a submodule: `git submodule add git@github.com:pizzapanther/gae_boto.git gae_boto`
