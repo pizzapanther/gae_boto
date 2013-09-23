@@ -46,10 +46,9 @@ class AwsApi (object):
       
     form_data = {'Action': action_name}
     method = self.method
-    path = '/'
-    host = '%s.%s.amazonaws.com' % (self.host, self.connection.region)
-    url = 'https://' + host + path
     counter = 1
+    path = config['path']
+    url_params = {'aws_acct': urllib.quote(self.connection.aws_acct)}
     
     if config.has_key('method'):
       method = config['method']
@@ -60,12 +59,20 @@ class AwsApi (object):
     for key, field in config['required'].items():
       if key in kwargs:
         field.validate(kwargs[key])
-        counter = field.set_attr(form_data, key, kwargs[key], counter)
+        
+        if field.url_param:
+          url_params[key] = urllib.quote(kwargs[key])
+          
+        else:
+          counter = field.set_attr(form_data, key, kwargs[key], counter)
+          
         del kwargs[key]
         
       else:
         raise Exception('%s is a required argument' % key)
         
+    path = path % url_params
+    
     for key, field in config['optional'].items():
       if key in kwargs:
         field.validate(kwargs[key])
@@ -76,6 +83,9 @@ class AwsApi (object):
       keywords = ", ".join(kwargs.keys())
       raise Exception('Unknown API Parameters: %s' % keywords)
       
+    host = '%s.%s.amazonaws.com' % (self.host, self.connection.region)
+    url = 'https://' + host + path
+    
     d = datetime.datetime.utcnow()
     
     if method in ('POST', 'PUT', 'PATCH'):

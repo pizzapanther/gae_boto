@@ -3,8 +3,9 @@ import re
 COUNTER = 'counter'
 
 class Field (object):
-  def __init__ (self, field_type=None):
+  def __init__ (self, field_type=None, url_param=False):
     self.field_type = field_type
+    self.url_param = url_param
     
   def validate (self, value):
     raise NotImplementedError
@@ -24,10 +25,10 @@ class Field (object):
     return counter
     
 class String (Field):
-  def __init__ (self, field_type=None, max_length=None, min_length=None):
+  def __init__ (self, field_type=None, url_param=False, max_length=None, min_length=None):
     self.max_length = max_length
     self.min_length = min_length
-    super(String, self).__init__(field_type=field_type)
+    super(String, self).__init__(field_type=field_type, url_param=url_param)
     
   def validate (self, value):
     if self.max_length and len(value) > self.max_length:
@@ -49,10 +50,10 @@ class Slug (String):
     super(Slug, self).validate(value)
     
 class Integer (Field):
-  def __init__ (self, field_type=None, max_value=None, min_value=None):
+  def __init__ (self, field_type=None, url_param=False, max_value=None, min_value=None):
     self.max_value = max_value
     self.min_value = min_value
-    super(Integer, self).__init__(field_type=field_type)
+    super(Integer, self).__init__(field_type=field_type, url_param=url_param)
     
   def validate (self, value):
     if self.max_value and value > self.max_value:

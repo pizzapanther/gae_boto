@@ -22,6 +22,9 @@ result = connection.sqs.CreateQueue(QueueName='Narf-Queue', DelaySeconds=50)
 rpc = connection.sqs.CreateQueue(async=True, QueueName='Narf-Queue', DelaySeconds=50)
 result = rpc.get_result()
 
+# Send a message to the Queue
+result = c.sqs.SendMessage(QueueName='Narf-Queue', MessageBody='I like turtles')
+
 ```
 
 All calls to the API support the arguments **async=True|False** and **callback=a_callback_function**.  See [Asynchronous Requests](https://developers.google.com/appengine/docs/python/urlfetch/asynchronousrequests) for more info on how to handle asynchronous requests.
