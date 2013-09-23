@@ -34,4 +34,4 @@ To install, simply add the gae_boto directory to the root of your App Engine app
 
 * Download and unzip https://github.com/pizzapanther/gae_boto/archive/master.zip and rename directory to gae_boto
 * Checkout the code: `git clone git@github.com:pizzapanther/gae_boto.git`
-* If your using Git checkout as a submodule: `git submodule add git@github.com:pizzapanther/gae_boto.git gae_boto`
+* If you're using Git, checkout as a submodule: `git submodule add git@github.com:pizzapanther/gae_boto.git gae_boto`
