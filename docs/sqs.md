@@ -15,6 +15,9 @@
       * Policy
       * ReceiveMessageWaitTimeSeconds
       * VisibilityTimeout
+* [DeleteQueue](http://docs.aws.amazon.com/AWSSimpleQueueService/latest/APIReference/Query_QueryDeleteQueue.html)
+  * Required Parameters:
+      * QueueName
 * [SendMessage](http://docs.aws.amazon.com/AWSSimpleQueueService/latest/APIReference/Query_QuerySendMessage.html)
   * Required Parameters:
       * QueueName

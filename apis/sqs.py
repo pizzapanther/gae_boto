@@ -45,6 +45,16 @@ class SQS (AwsApi):
       }
     },
     
+    'DeleteQueue': {
+      'path': SQS_PATH,
+      
+      'required': {
+        'QueueName': QueueName,
+      },
+      
+      'optional': {}
+    },
+    
     'SendMessageBatch': {
       'path': SQS_PATH,
       

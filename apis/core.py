@@ -117,9 +117,6 @@ class AwsApi (object):
     return self.fetch(async, callback, **url_kwargs)
     
   def fetch (self, async, callback, **kwargs):
-    print kwargs['url']
-    print ''
-    
     if async:
       rpc = urlfetch.create_rpc()
       if callback:
