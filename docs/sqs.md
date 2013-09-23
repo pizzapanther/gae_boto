@@ -7,11 +7,11 @@
 
 * [CreateQueue](http://docs.aws.amazon.com/AWSSimpleQueueService/latest/APIReference/Query_QueryCreateQueue.html)
   * Required Parameters:
-    * QueueName
+      * QueueName
   * Optional Parameters:
-    * DelaySeconds
-    * MaximumMessageSize
-    * MessageRetentionPeriod
-    * Policy
-    * ReceiveMessageWaitTimeSeconds
-    * VisibilityTimeout
+      * DelaySeconds
+      * MaximumMessageSize
+      * MessageRetentionPeriod
+      * Policy
+      * ReceiveMessageWaitTimeSeconds
+      * VisibilityTimeout
