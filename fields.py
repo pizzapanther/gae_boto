@@ -65,3 +65,39 @@ class Integer (Field):
   def stringify (self, value):
     return str(value)
     
+class ListofDicts (Field):
+  def __init__ (self, required={}, optional={}):
+    self.required = required
+    self.optional = optional
+    self.field_type = None
+    self.url_param = False
+    
+  def validate (self, values_list):
+    for dict_values in values_list:
+      for key, field in self.required.items():
+        if key in dict_values:
+          field.validate(dict_values[key])
+          
+        else:
+          raise Exception('%s is a required argument' % key)
+          
+      for key, field in self.optional.items():
+        if key in dict_values:
+          field.validate(dict_values[key])
+          
+  def set_attr (self, form_data, name, values_list, counter):
+    my_counter = 1
+    for dict_values in values_list:
+      for key, field in self.required.items():
+        my_name = '%s.%s.%s' % (name, str(my_counter), key)
+        form_data[my_name] = field.stringify(dict_values[key])
+        
+      for key, field in self.optional.items():
+        if key in dict_values:
+          my_name = '%s.%s.%s' % (name, str(my_counter), key)
+          form_data[my_name] = field.stringify(dict_values[key])
+          
+      my_counter += 1
+      
+    return counter
+    

@@ -4,6 +4,7 @@ import gae_boto.fields as fields
 from .core import AwsApi
 
 QueueName = fields.Slug(max_length=80, min_length=1, url_param=True)
+SQS_PATH = '/%(aws_acct)s/%(QueueName)s/'
 
 class SQS (AwsApi):
   parameters = {
@@ -32,7 +33,7 @@ class SQS (AwsApi):
     },
     
     'SendMessage': {
-      'path': '/%(aws_acct)s/%(QueueName)s/',
+      'path': SQS_PATH,
       
       'required': {
         'QueueName': QueueName,
@@ -42,6 +43,22 @@ class SQS (AwsApi):
       'optional': {
         'DelaySeconds': fields.Integer(max_value=900, min_value=0),
       }
-    }
+    },
+    
+    'SendMessageBatch': {
+      'path': SQS_PATH,
+      
+      'required': {
+        'QueueName': QueueName,
+        'SendMessageBatchRequestEntry': fields.ListofDicts(
+          required={
+            'Id': fields.String(min_length=1),
+            'MessageBody': fields.String(max_length=262144, min_length=1)},
+          optional={'DelaySeconds': fields.Integer(max_value=900, min_value=0)}
+        ),
+      },
+      
+      'optional': {}
+    },
   }
   

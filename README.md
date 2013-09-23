@@ -13,7 +13,7 @@ If you don't see the API you need, please contribute or ask nicely in the Issue 
 ```python
 from gae_boto import AmazonConnection
 
-connection = AmazonConnection('AWS_ID', 'AWS_KEY', 'ACCOUNT_NUMBER')
+connection = AmazonConnection('AWS_ID', 'AWS_KEY', 'AWS_ACCOUNT_NUMBER')
 # Note: Account number is not always required for all API's
 
 result = connection.sqs.CreateQueue(QueueName='Narf-Queue', DelaySeconds=50)
@@ -23,7 +23,14 @@ rpc = connection.sqs.CreateQueue(async=True, QueueName='Narf-Queue', DelaySecond
 result = rpc.get_result()
 
 # Send a message to the Queue
-result = c.sqs.SendMessage(QueueName='Narf-Queue', MessageBody='I like turtles')
+result = connection.sqs.SendMessage(QueueName='Narf-Queue', MessageBody='I like turtles')
+
+# Send a batch of messages
+MessageBatch = [
+  {'Id': 'msg1', 'MessageBody': 'NARF 1'},
+  {'Id': 'msg2', 'MessageBody': 'NARF 2'},
+]
+result = connection.sqs.SendMessageBatch(QueueName='Narf-Queue', SendMessageBatchRequestEntry=MessageBatch)
 
 ```
 

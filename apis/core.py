@@ -71,8 +71,6 @@ class AwsApi (object):
       else:
         raise Exception('%s is a required argument' % key)
         
-    path = path % url_params
-    
     for key, field in config['optional'].items():
       if key in kwargs:
         field.validate(kwargs[key])
@@ -83,6 +81,7 @@ class AwsApi (object):
       keywords = ", ".join(kwargs.keys())
       raise Exception('Unknown API Parameters: %s' % keywords)
       
+    path = path % url_params
     host = '%s.%s.amazonaws.com' % (self.host, self.connection.region)
     url = 'https://' + host + path
     
@@ -108,7 +107,7 @@ class AwsApi (object):
       form_data['Expires'] = dateValue
       
       params = [(key, form_data[key]) for key in sorted(form_data.keys())]
-      form_data = urllib.urlencode(params)
+      form_data = self.urlencode(params)
       
       url += '?' + form_data
       url += '&Signature=' + urllib.quote(self.signature("\n".join([method, host, path, form_data])))
@@ -118,6 +117,9 @@ class AwsApi (object):
     return self.fetch(async, callback, **url_kwargs)
     
   def fetch (self, async, callback, **kwargs):
+    print kwargs['url']
+    print ''
+    
     if async:
       rpc = urlfetch.create_rpc()
       if callback:
@@ -127,3 +129,12 @@ class AwsApi (object):
       
     return urlfetch.fetch(**kwargs)
     
+  def urlencode (self, params):
+    ret = ''
+    for key, value in params:
+      if ret:
+        ret += '&'
+        
+      ret += key + '=' + urllib.quote(value)
+      
+    return ret
