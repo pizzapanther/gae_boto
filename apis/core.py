@@ -6,6 +6,13 @@ import datetime
 
 from google.appengine.api import urlfetch
 
+try:
+  from lxml import objectify
+  
+except:
+  pass
+
+
 class MethodProxy (object):
   def __init__ (self, api, action_name, config):
     self.api = api
@@ -15,6 +22,9 @@ class MethodProxy (object):
   def run_action (self, **kwargs):
     return self.api.action(self.action_name, self.config, **kwargs)
     
+def xml_object (self):
+  return objectify.fromstring(self.content)
+  
 class AwsApi (object):
   methods = {}
   parameters = {}
@@ -124,7 +134,10 @@ class AwsApi (object):
         
       return urlfetch.make_fetch_call(rpc, **kwargs)
       
-    return urlfetch.fetch(**kwargs)
+    #print kwargs['url']
+    result = urlfetch.fetch(**kwargs)
+    result.xml_object = lambda: xml_object(result)
+    return result
     
   def urlencode (self, params):
     ret = ''
@@ -132,6 +145,7 @@ class AwsApi (object):
       if ret:
         ret += '&'
         
-      ret += key + '=' + urllib.quote(value)
+      value = urllib.quote(value, safe='')
+      ret += key + '=' + value
       
     return ret

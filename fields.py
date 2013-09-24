@@ -1,11 +1,14 @@
 import re
+import types
 
 COUNTER = 'counter'
+MULTI = 'multi'
 
 class Field (object):
-  def __init__ (self, field_type=None, url_param=False):
+  def __init__ (self, field_type=None, url_param=False, values=[]):
     self.field_type = field_type
     self.url_param = url_param
+    self.values = values
     
   def validate (self, value):
     raise NotImplementedError
@@ -19,18 +22,43 @@ class Field (object):
       form_data['Attribute.%d.Value' % counter] = self.stringify(value)
       counter += 1
       
+    if self.field_type == MULTI:
+      my_counter = 1
+      if self.is_list(value):
+        for v in value:
+          form_data['%s.%d' % (name, my_counter)] = self.stringify(v)
+          my_counter +=1
+          
+      else:
+        form_data[name] = self.stringify(value)
+        
     else:
       form_data[name] = self.stringify(value)
       
     return counter
     
+  def is_list (self, value):
+    return type(value) is types.ListType or type(value) is types.TupleType
+    
+  def valdidate_values (self, value):
+    if self.values:
+      if self.field_type == MULTI and self.is_list(value):
+        for v in value:
+          if v not in self.values:
+            raise Exception('Not a valid value, must be: %s' % str(self.values))
+            
+      else:
+        if value not in self.values:
+          raise Exception('Not a valid value, must be: %s' % str(self.values))
+          
 class String (Field):
-  def __init__ (self, field_type=None, url_param=False, max_length=None, min_length=None):
+  def __init__ (self, field_type=None, url_param=False, values=[], max_length=None, min_length=None):
     self.max_length = max_length
     self.min_length = min_length
-    super(String, self).__init__(field_type=field_type, url_param=url_param)
+    super(String, self).__init__(field_type=field_type, url_param=url_param, values=values)
     
   def validate (self, value):
+    self.valdidate_values(value)
     if self.max_length and len(value) > self.max_length:
       raise Exception('Exceeds Max Length: %d' % self.max_length)
       
@@ -50,12 +78,13 @@ class Slug (String):
     super(Slug, self).validate(value)
     
 class Integer (Field):
-  def __init__ (self, field_type=None, url_param=False, max_value=None, min_value=None):
+  def __init__ (self, field_type=None, url_param=False, values=[], max_value=None, min_value=None):
     self.max_value = max_value
     self.min_value = min_value
-    super(Integer, self).__init__(field_type=field_type, url_param=url_param)
+    super(Integer, self).__init__(field_type=field_type, url_param=url_param, values=values)
     
   def validate (self, value):
+    self.valdidate_values(value)
     if self.max_value and value > self.max_value:
       raise Exception('Exceeds Max Value: %d' % self.max_value)
       

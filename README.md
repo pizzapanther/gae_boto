@@ -32,6 +32,10 @@ MessageBatch = [
 ]
 result = connection.sqs.SendMessageBatch(QueueName='Narf-Queue', SendMessageBatchRequestEntry=MessageBatch)
 
+# Parse XML into an object
+xml_obj = result.xml_object()
+message_text = xml_obj.ReceiveMessageResult.Message.Body.text
+request_id =  xml_obj.ResponseMetadata.RequestId.text
 ```
 
 All calls to the API support the arguments **async=True|False** and **callback=a_callback_function**.  See [Asynchronous Requests](https://developers.google.com/appengine/docs/python/urlfetch/asynchronousrequests) for more info on how to handle asynchronous requests.
@@ -45,3 +49,5 @@ To install, simply add the gae_boto directory to the root of your App Engine app
 * Download and unzip https://github.com/pizzapanther/gae_boto/archive/master.zip and rename directory to gae_boto
 * Checkout the code: `git clone git@github.com:pizzapanther/gae_boto.git`
 * If you're using Git, checkout as a submodule: `git submodule add git@github.com:pizzapanther/gae_boto.git gae_boto`
+
+If you plan to parse your result XML make sure LXML is added to your libraries section of your app.yaml.  Synchronous results will have a method called _xml_object_ added to them to parse the XML into a Python object.

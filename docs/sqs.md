@@ -6,20 +6,32 @@
 ## Actions
 
 * [CreateQueue](http://docs.aws.amazon.com/AWSSimpleQueueService/latest/APIReference/Query_QueryCreateQueue.html)
-  * Required Parameters:
+  * Required:
       * QueueName
-  * Optional Parameters:
+  * Optional:
       * DelaySeconds
       * MaximumMessageSize
       * MessageRetentionPeriod
       * Policy
       * ReceiveMessageWaitTimeSeconds
       * VisibilityTimeout
-* [DeleteQueue](http://docs.aws.amazon.com/AWSSimpleQueueService/latest/APIReference/Query_QueryDeleteQueue.html)
-  * Required Parameters:
+* [DeleteMessage](http://docs.aws.amazon.com/AWSSimpleQueueService/latest/APIReference/Query_QueryDeleteMessage.html)
+  * Required:
       * QueueName
+      * ReceiptHandle
+* [DeleteQueue](http://docs.aws.amazon.com/AWSSimpleQueueService/latest/APIReference/Query_QueryDeleteQueue.html)
+  * Required:
+      * QueueName
+* [ReceiveMessage](http://docs.aws.amazon.com/AWSSimpleQueueService/latest/APIReference/Query_QueryReceiveMessage.html)
+  * Required:
+      * QueueName
+  * Optional:
+      * AttributeName
+      * MaxNumberOfMessages
+      * VisibilityTimeout
+      * WaitTimeSeconds
 * [SendMessage](http://docs.aws.amazon.com/AWSSimpleQueueService/latest/APIReference/Query_QuerySendMessage.html)
-  * Required Parameters:
+  * Required:
       * QueueName
       * MessageBody
   * Optional Parameters:
