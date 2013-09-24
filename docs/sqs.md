@@ -32,11 +32,12 @@
       * WaitTimeSeconds
 * [SendMessage](http://docs.aws.amazon.com/AWSSimpleQueueService/latest/APIReference/Query_QuerySendMessage.html)
   * Required:
-      * QueueName
       * MessageBody
-  * Optional Parameters:
+      * QueueName
+  * Optional:
       * DelaySeconds
 * [SendMessageBatch](http://docs.aws.amazon.com/AWSSimpleQueueService/latest/APIReference/Query_QuerySendMessageBatch.html)
-  * Required Parameters:
+  * Required:
       * QueueName
-      * SendMessageBatchRequestEntry: List of Id, MessageBody, DelaySeconds(optional)
+      * SendMessageBatchRequestEntry: List of Id, MessageBody, optional: (DelaySeconds)
+

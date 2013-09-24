@@ -1,5 +1,3 @@
-from google.appengine.api import urlfetch
-
 import gae_boto.fields as fields
 from .core import AwsApi
 
