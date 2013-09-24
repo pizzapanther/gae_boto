@@ -4,6 +4,9 @@ from .core import AwsApi
 QueueName = fields.Slug(max_length=80, min_length=1, url_param=True)
 
 MessageAttrs = ('All', 'SenderId', 'SentTimestamp', 'ApproximateReceiveCount', 'ApproximateFirstReceiveTimestamp')
+ActionPerms = ('*', 'SendMessage', 'ReceiveMessage', 'DeleteMessage', 'ChangeMessageVisibility', 'GetQueueAttributes', 'GetQueueUrl')
+QueueAttrs = ('All', 'ApproximateNumberOfMessages', 'ApproximateNumberOfMessagesNotVisible', 'VisibilityTimeout', 'CreatedTimestamp', 'LastModifiedTimestamp', 'Policy', 'MaximumMessageSize', 'MessageRetentionPeriod', 'QueueArn', 'OldestMessageAge', 'DelaySeconds', 'ApproximateNumberOfMessagesDelayed')
+SetQueueAttrs = ('DelaySeconds', 'MaximumMessageSize', 'MessageRetentionPeriod', 'Policy', 'ReceiveMessageWaitTimeSeconds', 'VisibilityTimeout')
 
 SQS_PATH = '/%(aws_acct)s/%(QueueName)s/'
 
@@ -21,6 +24,48 @@ class SQS (AwsApi):
   method = 'GET'
   
   methods = {
+    'AddPermission': {
+      'path': SQS_PATH,
+      
+      'required': {
+        'QueueName': QueueName,
+        'Label': fields.Slug(min_length=1, max_length=80),
+        'AWSAccountId': fields.String(field_type=fields.MULTI),
+        'ActionName': fields.String(values=ActionPerms, field_type=fields.MULTI),
+      },
+      
+      'optional': {}
+    },
+    
+    'ChangeMessageVisibility': {
+      'path': SQS_PATH,
+      
+      'required': {
+        'QueueName': QueueName,
+        'ReceiptHandle': fields.String(min_length=1),
+        'VisibilityTimeout': fields.Integer(max_value=43200, min_value=0)
+      },
+      
+      'optional': {}
+    },
+    
+    'ChangeMessageVisibilityBatch': {
+      'path': SQS_PATH,
+      
+      'required': {
+        'QueueName': QueueName,
+        'ChangeMessageVisibilityBatchRequestEntry': fields.ListofDicts(
+          required={
+            'Id': fields.String(min_length=1),
+            'ReceiptHandle': fields.String(min_length=1),
+            'VisibilityTimeout': fields.Integer(max_value=43200, min_value=0)
+          }
+        ),
+      },
+      
+      'optional': {}
+    },
+    
     'CreateQueue': {
       'path': '/',
       
@@ -44,6 +89,22 @@ class SQS (AwsApi):
       'required': {
         'QueueName': QueueName,
         'ReceiptHandle': fields.String(min_length=1),
+      },
+      
+      'optional': {}
+    },
+    
+    'DeleteMessageBatch': {
+      'path': SQS_PATH,
+      
+      'required': {
+        'QueueName': QueueName,
+        'DeleteMessageBatchRequestEntry': fields.ListofDicts(
+          required={
+            'Id': fields.String(min_length=1),
+            'ReceiptHandle': fields.String(min_length=1),
+          }
+        ),
       },
       
       'optional': {}
@@ -82,6 +143,60 @@ class SQS (AwsApi):
       
       'required': {
         'QueueName': QueueName,
+      },
+      
+      'optional': {}
+    },
+    
+    'GetQueueAttributes': {
+      'path': SQS_PATH,
+      
+      'required': {
+        'QueueName': QueueName,
+        'AttributeName': fields.String(values=QueueAttrs, field_type=fields.MULTI),
+      },
+      
+      'optional': {}
+    },
+    
+    'GetQueueUrl': {
+      'path': '/',
+      
+      'required': {
+        'QueueName': QueueName,
+      },
+      
+      'optional': {
+        'QueueOwnerAWSAccountId': fields.String(min_length=1),
+      }
+    },
+    
+    'ListQueues': {
+      'path': '/',
+      
+      'required': {},
+      
+      'optional': {
+        'QueueNamePrefix': fields.Slug(min_length=1, max_length=80),
+      }
+    },
+    
+    'RemovePermission': {
+      'path': SQS_PATH,
+      
+      'required': {
+        'Label': fields.Slug(min_length=1, max_length=80),
+      },
+      
+      'optional': {}
+    },
+    
+    'SetQueueAttributes': {
+      'path': SQS_PATH,
+      
+      'required': {
+        'Attribute.Name': fields.String(values=SetQueueAttrs),
+        'Attribute.Value': fields.String(min_length=1),
       },
       
       'optional': {}

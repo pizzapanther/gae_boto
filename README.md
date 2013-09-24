@@ -4,7 +4,8 @@ Even though Google has a lot of great services sometimes it is still necessary t
 
 Right now GAE Boto supports the following APIs:
 
-* [SQS](docs/sqs.md)
+* [SES](docs/ses.md) _(coming soon)_
+* [SQS](docs/sqs.md) _(fully implemented)_
 
 If you don't see the API you need, please contribute or ask nicely in the Issue Tracker :-)
 
