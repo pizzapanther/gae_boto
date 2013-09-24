@@ -5,9 +5,6 @@ import sys
 
 sys.path.append('..')
 
-from gae_boto import AmazonConnection
-from gae_boto.fields import ListofDicts
-
 APIS = ('sqs',)
 
 def write_field (attr, field, fh):
@@ -62,5 +59,13 @@ def generate ():
     
     
 if __name__ == '__main__':
+  sys.path.insert(0, sys.argv[1])
+  import dev_appserver
+  dev_appserver.fix_sys_path()
+  
+  from gae_boto import AmazonConnection
+  from gae_boto.fields import ListofDicts
+
+  
   generate()
   

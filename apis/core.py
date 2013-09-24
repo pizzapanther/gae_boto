@@ -4,11 +4,7 @@ import urllib
 import hashlib
 import datetime
 
-try:
-  from google.appengine.api import urlfetch
-  
-except:
-  pass
+from google.appengine.api import urlfetch
 
 try:
   from lxml import objectify
