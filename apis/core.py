@@ -4,8 +4,22 @@ import urllib
 import hashlib
 import datetime
 
-from google.appengine.api import urlfetch
-
+try:
+  from google.appengine.api import urlfetch
+  
+except:
+  try:
+    import requests
+    
+  except:
+    raise Exception('You must be in an Google App Engine environment or install the requests package.')
+    
+  else:
+    IMPORT_TYPE = 'REQUESTS'
+    
+else:
+  IMPORT_TYPE = 'GOOGLE'
+  
 try:
   from lxml import objectify
   

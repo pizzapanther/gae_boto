@@ -3,7 +3,10 @@
 import os
 import sys
 
-sys.path.append('..')
+sys.path.insert(0, '..')
+
+from gae_boto import AmazonConnection
+from gae_boto.fields import ListofDicts
 
 APIS = ('sqs',)
 
@@ -59,13 +62,5 @@ def generate ():
     
     
 if __name__ == '__main__':
-  sys.path.insert(0, sys.argv[1])
-  import dev_appserver
-  dev_appserver.fix_sys_path()
-  
-  from gae_boto import AmazonConnection
-  from gae_boto.fields import ListofDicts
-
-  
   generate()
   
