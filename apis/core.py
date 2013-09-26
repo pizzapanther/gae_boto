@@ -15,11 +15,8 @@ except:
     raise Exception('You must be in an Google App Engine environment or install the requests package.')
     
   else:
-    IMPORT_TYPE = 'REQUESTS'
+    urlfetch = None
     
-else:
-  IMPORT_TYPE = 'GOOGLE'
-  
 try:
   from lxml import objectify
   
@@ -37,7 +34,10 @@ class MethodProxy (object):
     return self.api.action(self.action_name, self.config, **kwargs)
     
 def xml_object (self):
-  return objectify.fromstring(self.content)
+  if hasattr(self, 'content'):
+    return objectify.fromstring(self.content)
+    
+  return objectify.fromstring(self.text)
   
 class AwsApi (object):
   methods = {}
@@ -136,23 +136,35 @@ class AwsApi (object):
       url += '?' + form_data
       url += '&Signature=' + urllib.quote(self.signature("\n".join([method, host, path, form_data])))
       
-      url_kwargs = dict(url=url, method=getattr(urlfetch, method))
+      url_kwargs = dict(url=url, method=method)
       
     return self.fetch(async, callback, **url_kwargs)
     
   def fetch (self, async, callback, **kwargs):
-    if async:
-      rpc = urlfetch.create_rpc()
-      if callback:
-        rpc.callback = lambda: callback(rpc)
-        
-      return urlfetch.make_fetch_call(rpc, **kwargs)
+    if urlfetch:
+      kwargs['method'] = getattr(urlfetch, kwargs['method'])
       
-    #print kwargs['url']
-    result = urlfetch.fetch(**kwargs)
-    result.xml_object = lambda: xml_object(result)
-    return result
-    
+      if async:
+        rpc = urlfetch.create_rpc()
+        if callback:
+          rpc.callback = lambda: callback(rpc)
+          
+        return urlfetch.make_fetch_call(rpc, **kwargs)
+        
+      #print kwargs['url']
+      result = urlfetch.fetch(**kwargs)
+      result.xml_object = lambda: xml_object(result)
+      return result
+      
+    else:
+      if async:
+        raise Exception('Async only supported on Google App Engine currently.')
+        
+      method = getattr(requests, kwargs['method'].lower())
+      result = method(kwargs['url'])
+      result.xml_object = lambda: xml_object(result)
+      return result
+      
   def urlencode (self, params):
     ret = ''
     for key, value in params:
