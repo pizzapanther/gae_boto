@@ -3,6 +3,7 @@ import base64
 import urllib
 import hashlib
 import datetime
+from xml.sax.saxutils import escape
 
 try:
   from google.appengine.api import urlfetch
@@ -42,6 +43,7 @@ def xml_object (self):
 class AwsApi (object):
   methods = {}
   parameters = {}
+  no_region = False
   
   def __init__ (self, connection):
     self.connection = connection
@@ -79,6 +81,7 @@ class AwsApi (object):
       
     for key, value in self.parameters.items():
       form_data[key] = value
+      url_params[key] = urllib.quote(value)
       
     for key, field in config['required'].items():
       if key in kwargs:
@@ -106,21 +109,32 @@ class AwsApi (object):
       raise Exception('Unknown API Parameters: %s' % keywords)
       
     path = path % url_params
-    host = '%s.%s.amazonaws.com' % (self.host, self.connection.region)
+    if self.no_region:
+      host = '%s.amazonaws.com' % self.host
+      
+    else:
+      host = '%s.%s.amazonaws.com' % (self.host, self.connection.region)
+      
     url = 'https://' + host + path
     
     d = datetime.datetime.utcnow()
     
     if method in ('POST', 'PUT', 'PATCH'):
       dateValue = d.strftime('%a, %d %b %Y %H:%M:%S GMT')
-      form_data = urllib.urlencode(form_data)
-      headers = {'Content-Type': 'application/x-www-form-urlencoded'}
+      if config.has_key('template'):
+        headers = {'Content-Type': 'text/plain'}
+        form_data = config['template'] % form_data
+        
+      else:
+        form_data = urllib.urlencode(form_data)
+        headers = {'Content-Type': 'application/x-www-form-urlencoded'}
+        
       headers['Date'] = dateValue
       headers['X-Amzn-Authorization'] = \
       'AWS3-HTTPS AWSAccessKeyId=%s, Algorithm=HMACSHA256, Signature=%s' % (self.connection.aws_id, 
         self.signature(dateValue))
         
-      url_kwargs = dict(url=url, payload=form_data, method=getattr(urlfetch, method), headers=headers)
+      url_kwargs = dict(url=url, payload=form_data, method=method, headers=headers)
       
     else:
       d = d + datetime.timedelta(seconds=60)

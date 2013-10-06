@@ -4,6 +4,7 @@ Even though Google has a lot of great services sometimes it is still necessary t
 
 Right now GAE Boto supports the following APIs:
 
+* [Route53](docs/route53.md) _(partial/in work)_
 * [SES](docs/ses.md) _(coming soon)_
 * [SQS](docs/sqs.md) _(fully implemented)_
 

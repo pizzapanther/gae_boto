@@ -8,7 +8,7 @@ sys.path.insert(0, '..')
 from gae_boto import AmazonConnection
 from gae_boto.fields import ListofDicts
 
-APIS = ('sqs',)
+APIS = ('sqs', 'route53')
 
 def write_field (attr, field, fh):
   if isinstance(field, ListofDicts):
