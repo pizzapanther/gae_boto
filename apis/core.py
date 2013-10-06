@@ -74,8 +74,11 @@ class AwsApi (object):
     method = self.method
     counter = 1
     path = config['path']
-    url_params = {'aws_acct': urllib.quote(self.connection.aws_acct)}
     
+    url_params = {}
+    if self.connection.aws_acct:
+      url_params['aws_acct'] = urllib.quote(self.connection.aws_acct)
+      
     if config.has_key('method'):
       method = config['method']
       
