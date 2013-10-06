@@ -123,6 +123,9 @@ class AwsApi (object):
       dateValue = d.strftime('%a, %d %b %Y %H:%M:%S GMT')
       if config.has_key('template'):
         headers = {'Content-Type': 'text/plain'}
+        for key, value in form_data.items():
+          form_data[key] = escape(value)
+          
         form_data = config['template'] % form_data
         
       else:
