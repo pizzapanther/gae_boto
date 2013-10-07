@@ -6,7 +6,7 @@ MY_DIR = os.path.normpath(os.path.dirname(__file__))
 
 setup(
   name = "gae_boto",
-  version = '13.09',
+  version = '13.10',
   description = "A recreation of Amazon Boto library that is is compatible with Google App Engine and easier to use.",
   url = "https://github.com/pizzapanther/gae_boto",
   author = "Paul Bailey",
