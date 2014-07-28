@@ -11,7 +11,7 @@ class S3Key (object):
     self.key = key
     self.connection = connection
     
-  def url (self, https=False, sign=False, expires=0):
+  def url (self, https=False, sign=False, expires=0, method='GET'):
     http = 'http'
     if https:
       http = 'https'
@@ -21,7 +21,7 @@ class S3Key (object):
     if sign:
       now = datetime.datetime.utcnow()
       expire = int(time.mktime(now.utctimetuple())) + expires
-      sign_me = "GET\n\n\n{expire}\n/{bucket}/{key}".format(bucket=self.bucket, key=self.key, expire=expire)
+      sign_me = "{method}\n\n\n{expire}\n/{bucket}/{key}".format(method=method, bucket=self.bucket, key=self.key, expire=expire)
       h = hmac.new(key=self.connection.aws_key, msg=sign_me, digestmod=hashlib.sha1)
       signature = base64.b64encode(h.digest()).decode()
       
